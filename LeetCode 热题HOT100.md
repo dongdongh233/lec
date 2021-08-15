@@ -87,3 +87,111 @@ class Solution {
 }
 ```
 
+### 8.9~8.15
+
+#### 寻找两个正序数组的中位数
+
+```java
+class Solution {
+    public double findMedianSortedArrays(int[] nums1, int[] nums2) {
+        int m = nums1.length;
+        int n = nums2.length;
+        return (helper(nums1, 0, nums1.length - 1, nums2, 0, nums2.length - 1, (n + m + 1) / 2)
+                + helper(nums1, 0, nums1.length - 1, nums2, 0, nums2.length - 1, (n + m + 2) / 2)) / 2.0;
+    }
+    
+    private int helper(int[] nums1, int st1, int ed1, int[] nums2, int st2, int ed2, int k) {
+        int len1 = ed1 - st1 + 1;
+        int len2 = ed2 - st2 + 1;
+        if (len1 > len2) {
+            return helper(nums2, st2, ed2, nums1, st1, ed1, k);
+        }
+        if (st1 > ed1) {
+            return nums2[st2 + k - 1];
+        }
+        if (k == 1) 
+            return Math.min(nums1[st1], nums2[st2]);
+        len1 = Math.min(len1, k / 2);
+        len2 = Math.min(len2, k / 2);
+        if (nums1[st1 + len1 - 1] < nums2[st2 + len2 - 1]) {
+            return helper(nums1, st1 + len1, ed1, nums2, st2, ed2, k - len1);
+        }
+        return helper(nums1, st1, ed1, nums2, st2 + len2, ed2, k - len2);
+    }
+}
+```
+
+
+
+#### 最长回文子串
+
+```java
+class Solution {
+    public String longestPalindrome(String s) {
+        if (s == null || s.length() == 0) return "";
+        int len = 1;
+        int n = s.length();
+        boolean[][] f = new boolean[n][n];
+        for (int i = 0; i < n; i++) {
+            f[i][i] = true;
+        }
+        int l = 0, r = 0;
+        for (int i = 1; i < n; i++) {
+            for (int j = 0; j < i; j++) {
+                if (s.charAt(i) == s.charAt(j)) {
+                    if (i - j == 1) {
+                        f[j][i] = true;    
+                    } else {
+                        f[j][i] = f[j + 1][i - 1];
+                    }
+                }
+                if (f[j][i] && i - j + 1 > len) {
+                    l = j;
+                    r = i;
+                    len = i - j + 1;
+                }
+            }
+        }
+        return s.substring(l, r + 1);
+    }
+}
+```
+
+
+
+#### 正则表达式匹配
+
+```java
+class Solution {
+    public boolean isMatch(String s, String p) {
+        int m = s.length(), n = p.length();
+        boolean[][] f = new boolean[m + 1][n + 1];
+        f[0][0] = true;
+        for (int i = 2; i <= n; i += 2) {
+            if (p.charAt(i - 1) == '*') {
+                f[0][i] = f[0][i - 2];
+            }
+        }
+        for (int i = 1; i <= m; i++) {
+            for (int j = 1; j <= n; j++) {
+                if (s.charAt(i - 1) == p.charAt(j - 1) || p.charAt(j - 1) == '.') {
+                    f[i][j] = f[i - 1][j - 1];
+                } else if (j > 1 && p.charAt(j - 1) == '*') {
+                    if (f[i][j - 2]) {
+                        f[i][j] = true;
+                    } else {
+                        if (p.charAt(j - 2) == '.' || p.charAt(j - 2) == s.charAt(i - 1)) {
+                            f[i][j] = f[i - 1][j];
+                        }
+                    }
+                }
+            }
+        }
+        return f[m][n];
+    }
+}
+```
+
+
+
+
