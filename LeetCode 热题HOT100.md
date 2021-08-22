@@ -192,6 +192,109 @@ class Solution {
 }
 ```
 
+### 8.16~8.22
+#### 盛水最多的容器
+
+```java
+class Solution {
+    public int maxArea(int[] height) {
+        if (height == null || height.length == 0) {
+            return 0;
+        }
+        int res = 0;
+        int n = height.length;
+        int l = 0, r = n - 1;
+        int lmax = height[l], rmax = height[r];
+        while (l < r) {
+            if (lmax < rmax) {
+                res = Math.max((r - l) * lmax, res);
+                l++;
+                lmax = Math.max(height[l], lmax);
+            } else {
+                res = Math.max((r - l) * rmax, res);
+                r--;
+                rmax = Math.max(height[r], rmax);
+            }
+        }
+        return res;
+    }
+}
+```
+
+
+
+#### 三数之和
+
+```java
+class Solution {
+    public List<List<Integer>> threeSum(int[] nums) {
+        List<List<Integer>> res = new ArrayList<>();
+        if (nums == null || nums.length == 0) {
+            return res;
+        }
+        int n = nums.length;
+        Arrays.sort(nums);
+        
+        for (int i = 0; i < n - 2; i++) {
+            if (nums[i] > 0) break;
+            if (i > 0 && nums[i] == nums[i - 1]) continue;
+            int l = i + 1, r = n - 1;
+            while (l < r) {
+                int sum = nums[i] + nums[l] + nums[r];
+                if (sum == 0) {
+                    List<Integer> path = new ArrayList<>();
+                    path.add(nums[i]);
+                    path.add(nums[l]);
+                    path.add(nums[r]);
+                    res.add(path);
+                    while (l < r && nums[r] == nums[r - 1]) {
+                        r--;
+                    }                     
+                    while (l < r && nums[l] == nums[l + 1]) {
+                        l++;
+                    }                    
+                    l++;
+                    r--;
+                }
+                if (sum > 0) r--;
+                if (sum < 0) l++;
+            }
+        }
+        return res;
+    }
+}
+```
+
+
+
+#### 电话号码的字母组合
+
+```java
+class Solution {
+    List<String> res = new ArrayList<>();
+    public List<String> letterCombinations(String digits) {
+        if (digits == null || digits.length() == 0) return res;
+        String[] strs = {"", "", "abc", "def", "ghi", "jkl", "mno", "pqrs", "tuv", "wxyz"};
+        dfs(0, digits, strs, "");
+        return res;
+    }
+    
+    public void dfs(int level, String s, String[] strs, String path) {
+        if (level == s.length()) {
+            res.add(path);
+            return;
+        }
+        int digit = s.charAt(level) - '0';
+        String str = strs[digit];
+        for (int i = 0; i < str.length(); i++) {
+            dfs(level + 1, s, strs, path + str.charAt(i));
+        }
+    }
+}
+```
+
+
+
 
 
 
